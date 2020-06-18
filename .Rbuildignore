@@ -1,0 +1,5 @@
+^bellreg\.Rproj$
+^\.Rproj\.user$
+^inst/script_development\.R$
+^cran-comments\.md$
+^\.travis\.yml$
