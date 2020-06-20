@@ -4,7 +4,7 @@
 #'
 #' @docType package
 #' @name bellreg-package
-#' @aliases bellreg-package
+#' @aliases BellReg
 #' @useDynLib bellreg, .registration = TRUE
 #' @import methods
 #' @import Rcpp

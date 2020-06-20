@@ -14,8 +14,15 @@
 \item{...}{further arguments passed to or from other methods}
 }
 \value{
-100(1-alpha) confidence intervals for the regression coefficients
+100(1-alpha)% confidence intervals for the regression coefficients
 }
 \description{
 Confidence intervals for the regression coefficients
+}
+\examples{
+\donttest{
+fit <- bellreg(nf ~ lroll, data = faults)
+confint(fit)
+}
+
 }

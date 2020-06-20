@@ -27,8 +27,20 @@ zibellreg(
 \item{...}{further arguments passed to either `rstan::optimizing` or `rstan::sampling`.}
 }
 \value{
-zibellreg returns an object of class "bellreg" containing the fitted model.
+zibellreg returns an object of class "zibellreg" containing the fitted model.
 }
 \description{
 Fits the Bell regression model to overdispersed count data.
+}
+\examples{
+\donttest{
+# ML approach:
+mle <- zibellreg(cells ~ smoker+gender|smoker+gender, data = cells, approach = "mle")
+summary(mle)
+
+# Bayesian approach:
+bayes <- zibellreg(cells ~ 1|smoker+gender, data = cells, approach = "bayes")
+summary(bayes)
+}
+
 }

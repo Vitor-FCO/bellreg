@@ -12,7 +12,9 @@ devtools::install(quick=TRUE)
 
 #devtools::check()
 
-#devtools::build_manual()
+# devtools::check_win_devel()
+# rhub::check_for_cran()
+# devtools::build_manual()
 
 
-git remote add origin https://github.com/fndemarqui/bellreg.git
+# git remote add origin https://github.com/fndemarqui/bellreg.git

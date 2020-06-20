@@ -2,7 +2,6 @@
 % Please edit documentation in R/summary_bellreg.R
 \name{summary.bellreg}
 \alias{summary.bellreg}
-\alias{summary.ypbp}
 \title{Summary for the bellreg model}
 \usage{
 \method{summary}{bellreg}(object, ...)

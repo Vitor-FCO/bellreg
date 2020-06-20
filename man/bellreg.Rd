@@ -32,3 +32,15 @@ bellreg returns an object of class "bellreg" containing the fitted model.
 \description{
 Fits the Bell regression model to overdispersed count data.
 }
+\examples{
+\donttest{
+# ML approach:
+mle <- bellreg(nf ~ lroll, data = faults, approach = "mle")
+summary(mle)
+
+# Bayesian approach:
+bayes <- bellreg(nf ~ lroll, data = faults, approach = "bayes")
+summary(bayes)
+}
+
+}

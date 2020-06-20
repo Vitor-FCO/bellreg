@@ -17,3 +17,10 @@ the variance-covariance matrix associated with the regression coefficients.
 \description{
 Covariance of the regression coefficients
 }
+\examples{
+\donttest{
+fit <- zibellreg(cells ~ smoker + gender|smoker + gender, data = cells)
+vcov(fit)
+}
+
+}

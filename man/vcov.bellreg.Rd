@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{vcov.bellreg}
 \alias{vcov.bellreg}
-\title{Covariance of the regression coefficients}
+\title{Variance-covariance matrix for a bellreg model}
 \usage{
 \method{vcov}{bellreg}(object, ...)
 }
 \arguments{
-\item{object}{an object of the class bellreg}
+\item{object}{an object of the class bellreg.}
 
 \item{...}{further arguments passed to or from other methods.}
 }
@@ -15,5 +15,12 @@
 the variance-covariance matrix associated with the regression coefficients.
 }
 \description{
-Covariance of the regression coefficients
+This function extracts and returns the variance-covariance matrix associated with the regression coefficients when the maximum likelihood estimation approach is used in the model fitting.
+}
+\examples{
+\donttest{
+fit <- bellreg(nf ~ lroll, data = faults)
+vcov(fit)
+}
+
 }

@@ -3,6 +3,7 @@
 \docType{package}
 \name{bellreg-package}
 \alias{bellreg-package}
+\alias{BellReg}
 \title{The 'bellreg' package.}
 \description{
 Bell Regression models for count data with overdispersion. The implemented models account for ordinary and zero-inflated regression models under both frequentist and Bayesian approaches. Theorical details regarding the models implemented in the package can be found in \insertCite{2018_Castellares}{bellreg} and \insertCite{2020_Lemonte}{bellreg}

@@ -39,7 +39,7 @@ print.summary.bellreg <- function(x, ...){
 
 #' Summary for the bellreg model
 #'
-#' @aliases summary.ypbp
+#' @aliases summary.bellreg
 #' @export
 #' @param object an objecto of the class 'bellreg'.
 #' @param ... further arguments passed to or from other methods.

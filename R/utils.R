@@ -29,7 +29,7 @@ DIC <- function(loglik, n){
 # Function to compute the WAIC criteria:
 WAIC <- function(loglik, n){
   lpd <- sum( log( apply(exp(loglik), 2, mean) ) )
-  pD <- sum( apply(loglik,  2, var) )
+  pD <- sum( apply(loglik,  2, stats::var) )
   WAIC <- lpd - pD
   return( matrix(c(WAIC, pD),ncol=2) )
 }
@@ -37,22 +37,27 @@ WAIC <- function(loglik, n){
 
 
 #---------------------------------------------
-#' Covariance of the regression coefficients
+#' Variance-covariance matrix for a bellreg model
 #'
 #' @aliases vcov.bellreg
+#' @description This function extracts and returns the variance-covariance matrix associated with the regression coefficients when the maximum likelihood estimation approach is used in the model fitting.
 #' @export
-#' @param object an object of the class bellreg
+#' @param object an object of the class bellreg.
 #' @param ... further arguments passed to or from other methods.
 #' @return  the variance-covariance matrix associated with the regression coefficients.
 #'
+#' @examples
+#' \donttest{
+#' fit <- bellreg(nf ~ lroll, data = faults)
+#' vcov(fit)
+#' }
 #'
 vcov.bellreg <- function(object, ...){
-  std <- diag(1/object$x_sd)
+  Delta <- object$Delta
   V <- MASS::ginv(object$fit$hessian)
-  colnames(V) <- names(object$fit$par)
-  rownames(V) <- names(object$fit$par)
-  V <- std%*%V%*%std
-  #class(V) <- "vcov.ypbp"
+  V <- Delta%*%V%*%t(Delta)
+  colnames(V) <- object$labels
+  rownames(V) <- object$labels
   return(V)
 }
 
@@ -60,61 +65,80 @@ vcov.bellreg <- function(object, ...){
 #' Covariance of the regression coefficients
 #'
 #' @aliases vcov.zibellreg
-#' @rdname vcov-methods
-#' @method vcov zibellreg
 #' @export
-#' @export vcov
 #' @param object an object of the class bellreg
 #' @param ... further arguments passed to or from other methods.
 #' @return  the variance-covariance matrix associated with the regression coefficients.
 #'
+#' @examples
+#' \donttest{
+#' fit <- zibellreg(cells ~ smoker + gender|smoker + gender, data = cells)
+#' vcov(fit)
+#' }
 #'
 vcov.zibellreg <- function(object, ...){
-  std <- diag(1/object$v_sd)
+  Delta <- object$Delta
   V <- MASS::ginv(object$fit$hessian)
-  colnames(V) <- names(object$fit$par)
-  rownames(V) <- names(object$fit$par)
-  V <- std%*%V%*%std
+  V <- Delta%*%V%*%t(Delta)
+  colnames(V) <- with(object, c(labels1, labels2))
+  rownames(V) <- with(object, c(labels1, labels2))
   return(V)
 }
 
 #---------------------------------------------
-#' Estimated regression coefficients
+#' Estimated regression coefficients for the bellreg model
 #'
 #' @aliases coef.bellreg
-#' @rdname coef-methods
 #' @export
-#' @param object an object of the class bellreg
-#' @param ... further arguments passed to or from other methods
-#' @return  the estimated regression coefficients
+#' @param object an object of the class bellreg.
+#' @param ... further arguments passed to or from other methods.
+#' @return  a vector with the estimated regression coefficients.
 #'
+#' @examples
+#' \dontrun{
+#' fit <- bellreg(nf ~ lroll, data=faults)
+#' coef(fit)
+#' }
 #'
 coef.bellreg <- function(object, ...){
   coeffs <- object$fit$par
+  names(coeffs) <- object$labels
   return(coeffs)
 }
 
 
 #---------------------------------------------
-#' Estimated regression coefficients
+#' Estimated regression coefficients for zibellreg model
 #'
 #' @aliases coef.zibellreg
-#' @rdname coef-methods
 #' @export
 #' @param object an object of the class bellreg
 #' @param ... further arguments passed to or from other methods
-#' @return  the estimated regression coefficients
+#' @return  a list containing the the estimated regression coefficients associated with the degenerated and Bell count distributions, respectively.
 #'
+#' @examples
+#' \donttest{
+#' fit <- zibellreg(cells ~ smoker + gender|smoker + gender, data = cells)
+#' coef(fit)
+#' }
 #'
 coef.zibellreg <- function(object, ...){
-  coeffs <- object$fit$par
+  coefs <- object$fit$par
+  p <- object$p
+  q <- object$q
+  coeffs1 <- coefs[1:q]
+  coeffs2 <- coefs[(q+1):(q+p)]
+  names(coeffs1) <- object$labels1
+  names(coeffs2) <- object$labels2
+  coeffs1
+  coeffs2
+  coeffs <- list("Degenerated dist." = coeffs1, "Bell dist." = coeffs2)
   return(coeffs)
 }
 
 
 #---------------------------------------------
 #' Generic S3 method confint
-#' @aliases confint.bellreg
 #' @export
 #' @param object a fitted model object
 #' @param ... further arguments passed to or from other methods.
@@ -130,8 +154,13 @@ confint <- function(object, ...) UseMethod("confint")
 #' @param object an object of the class bellreg
 #' @param level the confidence level required
 #' @param ... further arguments passed to or from other methods
-#' @return  100(1-alpha) confidence intervals for the regression coefficients
+#' @return  100(1-alpha)% confidence intervals for the regression coefficients
 #'
+#' @examples
+#' \donttest{
+#' fit <- bellreg(nf ~ lroll, data = faults)
+#' confint(fit)
+#' }
 #'
 confint.bellreg <- function(object, level=0.95, ...){
   p <- object$p

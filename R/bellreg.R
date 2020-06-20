@@ -13,6 +13,16 @@
 #' @param ... further arguments passed to either `rstan::optimizing` or `rstan::sampling`.
 #' @return bellreg returns an object of class "bellreg" containing the fitted model.
 #'
+#' @examples
+#' \donttest{
+#' # ML approach:
+#' mle <- bellreg(nf ~ lroll, data = faults, approach = "mle")
+#' summary(mle)
+#'
+#' # Bayesian approach:
+#' bayes <- bellreg(nf ~ lroll, data = faults, approach = "bayes")
+#' summary(bayes)
+#' }
 #'
 bellreg <- function(formula, data, approach = c("mle", "bayes"), hessian = TRUE,
                     hyperpars = list(mu_beta=0, sigma_beta=10), ...){
@@ -30,10 +40,13 @@ bellreg <- function(formula, data, approach = c("mle", "bayes"), hessian = TRUE,
     x_mean <- array(c(0, attr(X_std, "scaled:center")))
     x_sd <- array(c(1, attr(X_std, "scaled:scale")))
     X_std <- cbind(1, X_std)
+    Delta <- diag(1/x_sd)
+    Delta[1,] <- Delta[1,] -  x_mean/x_sd
   }else{
     X_std <- scale(X)
     x_mean <- array(attr(X_std, "scaled:center"))
     x_sd <- array(attr(X_std, "scaled:scale"))
+    Delta <- diag(1/x_sd)
   }
 
   stan_data <- list(y=y, X=X_std, n=n, p=p, x_mean=x_mean, x_sd=x_sd,
@@ -48,7 +61,7 @@ bellreg <- function(formula, data, approach = c("mle", "bayes"), hessian = TRUE,
     }
     fit$par <- fit$theta_tilde[-(1:p)]
     AIC <- -2*fit$value + 2*p
-    fit <- list(fit=fit, logLik = fit$value, AIC = AIC)
+    fit <- list(fit=fit, logLik = fit$value, AIC = AIC, Delta = Delta)
   }else{
     stan_data$approach <- 1
     fit <- rstan::sampling(stanmodels$bellreg, data=stan_data, verbose=FALSE, ...)
@@ -58,8 +71,8 @@ bellreg <- function(formula, data, approach = c("mle", "bayes"), hessian = TRUE,
 
   fit$n <- n
   fit$p <- p
-  fit$x_mean <- x_mean
-  fit$x_sd <- x_sd
+  # fit$x_mean <- x_mean
+  # fit$x_sd <- x_sd
 
   fit$call <- match.call()
   fit$formula <- stats::formula(Terms)

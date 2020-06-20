@@ -5,6 +5,16 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+Duration: 3m 44.5s
 
-* This is a new release.
+> checking installed package size ... NOTE
+    installed size is 73.0Mb
+    sub-directories of 1Mb or more:
+      libs  72.7Mb
+
+> checking for GNU extensions in Makefiles ... NOTE
+  GNU make is a SystemRequirements.
+
+0 errors ✓ | 0 warnings ✓ | 2 notes x
+
+R CMD check succeeded
