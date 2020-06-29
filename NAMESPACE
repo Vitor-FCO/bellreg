@@ -3,6 +3,7 @@
 S3method(coef,bellreg)
 S3method(coef,zibellreg)
 S3method(confint,bellreg)
+S3method(confint,zibellreg)
 S3method(print,summary.bellreg)
 S3method(print,summary.zibellreg)
 S3method(summary,bellreg)

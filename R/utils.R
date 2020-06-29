@@ -95,7 +95,7 @@ vcov.zibellreg <- function(object, ...){
 #' @return  a vector with the estimated regression coefficients.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fit <- bellreg(nf ~ lroll, data=faults)
 #' coef(fit)
 #' }
@@ -174,5 +174,39 @@ confint.bellreg <- function(object, level=0.95, ...){
   CI <- cbind(lower, upper)
   labels <- round(100*(c(alpha/2, 1-alpha/2)),1)
   colnames(CI) <- paste0(labels, "%")
+  return(CI)
+}
+
+
+#---------------------------------------------
+#' Confidence intervals for the regression coefficients
+#'
+#' @aliases confint.zibellreg
+#' @export
+#' @param object an object of the class zibellreg
+#' @param level the confidence level required
+#' @param ... further arguments passed to or from other methods
+#' @return  100(1-alpha)% confidence intervals for the regression coefficients
+#'
+#' @examples
+#' \donttest{
+#' fit <- zibellreg(cells ~ smoker+gender|smoker+gender, data = cells, approach = "mle")
+#' confint(fit)
+#' }
+#'
+
+confint.zibellreg <- function(object, level=0.95, ...){
+  p <- object$p
+  q <- object$q
+  V <- vcov(object)
+  par.hat <- object$fit$par
+  alpha <- 1-level
+  d <- stats::qnorm(1 - alpha/2)*sqrt(diag(V))
+  lower <- par.hat - d
+  upper <- par.hat + d
+  ci <- cbind(lower, upper)
+  labels <- round(100*(c(alpha/2, 1-alpha/2)),1)
+  colnames(ci) <- paste0(labels, "%")
+  CI <- list("Degenerated dist." = ci[1:p, ], "Bell dist." = ci[(q+1):(q+p),])
   return(CI)
 }

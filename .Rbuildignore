@@ -3,3 +3,4 @@
 ^inst/script_development\.R$
 ^cran-comments\.md$
 ^\.travis\.yml$
+^CRAN-RELEASE$

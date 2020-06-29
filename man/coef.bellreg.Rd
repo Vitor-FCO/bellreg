@@ -18,7 +18,7 @@ a vector with the estimated regression coefficients.
 Estimated regression coefficients for the bellreg model
 }
 \examples{
-\dontrun{
+\donttest{
 fit <- bellreg(nf ~ lroll, data=faults)
 coef(fit)
 }
