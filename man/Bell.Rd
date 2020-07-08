@@ -40,7 +40,7 @@ Probability function, distribution function, quantile function and random genera
 \details{
 Probability mass function
 \deqn{
-f(x) = \frac{\theta^{x} e^{e^{\theta}+1}B_x}{x!},
+f(x) = \frac{\theta^{x} e^{1-e^{\theta}}B_x}{x!},
 }
 where \eqn{B_x} is the Bell number, and x = 0, 1, ....
 }
